@@ -10,6 +10,7 @@ type Datastore struct {
 	BoardService
 	PostService
 	CommentService
+	VoteService
 }
 
 // UserService provides a wrapper around user persistance functions
@@ -25,6 +26,7 @@ type BoardService interface {
 	CreateBoard(*model.Board) error
 	UpdateBoard(*model.Board) error
 
+	GetBoards(page int) ([]*model.Board, error)
 	GetBoardByName(boardName string) (*model.Board, error)
 	GetBoardByID(boardID int) (*model.Board, error)
 
@@ -37,8 +39,8 @@ type PostService interface {
 
 	GetPost(postID int) (*model.Post, error)
 
-	GetBoardPostsByName(boardName string, postFilter *model.PostFilter) ([]model.Post, error)
-	GetBoardPostsByID(boardID string, postFilter *model.PostFilter) ([]model.Post, error)
+	GetBoardPostsByName(boardName string, postFilter *model.PostFilter) ([]*model.Post, error)
+	GetBoardPostsByID(boardID string, postFilter *model.PostFilter) ([]*model.Post, error)
 	GetUserPosts(userID int) ([]model.Post, error)
 
 	DeletePost(postID int) error
@@ -51,14 +53,29 @@ type CommentService interface {
 
 	GetComment(commentID int) (*model.Comment, error)
 
-	GetPostComments(postID int) ([]model.Comment, error)
-	GetUserComments(userID int) ([]model.Comment, error)
+	GetPostComments(postID int) ([]*model.Comment, error)
+	GetUserComments(userID int) ([]*model.Comment, error)
 
 	DeleteComment(commentID int) error
 }
 
+// A VoteService manages getting and setting votes on posts and comments
+type VoteService interface {
+	GetRealPostVotes(postID int) (int, error)
+	GetRealCommentVotes(commentID int) (int, error)
+
+	GetPostVotes(postID int) (int, error)
+	GetCommentVotes(commentID int) (int, error)
+
+	CheckUserPostVote(userID, postID int) (*model.Vote, error)
+	CheckUserCommentVote(userID, postID int) (*model.Vote, error)
+
+	SaveVote(*model.Vote) error
+	UpdateVote(*model.Vote) error
+}
+
 // GetPostWithComments returns everything needed to present a post to a user
-func (d *Datastore) GetPostWithComments(postID int) (post *model.Post, comments []model.Comment, err error) {
+func (d *Datastore) GetPostWithComments(postID int) (post *model.Post, comments []*model.Comment, err error) {
 	post, err = d.GetPost(postID)
 	if err != nil {
 		return

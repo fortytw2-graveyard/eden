@@ -3,7 +3,7 @@ language: go
 go:
     - 1.4
 env:
-    - DB_USER=postgres DB_NAME=eden_test DB_EXTRA=sslmode=disable
+    - DB_USER=postgres DB_NAME=eden_test DB_EXTRA=sslmode=disable REDIS_URL=localhost:6379
 
 before_install:
     - go get golang.org/x/tools/cmd/vet
@@ -16,6 +16,9 @@ install:
 
 addons:
   postgresql: "9.4"
+
+services:
+  - redis-server
 
 before_script:
   - psql -c 'create database eden_test;' -U postgres
