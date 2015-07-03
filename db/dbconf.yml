@@ -1,0 +1,7 @@
+development:
+    driver: postgres
+    open: user=eden password=eden dbname=eden sslmode=disable
+
+travis:
+    driver: postgres
+    open: user=postgres dbname=eden_test sslmode=disable

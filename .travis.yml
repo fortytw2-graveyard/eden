@@ -1,0 +1,28 @@
+language: go
+
+go:
+    - 1.4
+env:
+    - DB_USER=postgres DB_NAME=eden_test DB_EXTRA=sslmode=disable
+
+before_install:
+    - go get golang.org/x/tools/cmd/vet
+    - go get golang.org/x/tools/cover
+    - go get github.com/golang/lint/golint
+    - go get bitbucket.org/liamstask/goose/cmd/goose
+
+install:
+    - go get -d -v ./... && go build -v ./...
+
+addons:
+  postgresql: "9.4"
+
+before_script:
+  - psql -c 'create database eden_test;' -U postgres
+  - goose -env="travis" up
+
+script:
+  - goose -env="travis" status
+  - go vet -x ./...
+  - $HOME/gopath/bin/golint ./...
+  - go test -v ./...
