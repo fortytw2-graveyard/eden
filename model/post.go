@@ -10,6 +10,7 @@ type PostFilter struct {
 type Post struct {
 	ID    int    `json:"id"`
 	OP    *User  `json:"op"`
+	Votes int    `json:"votes" db:"-"`
 	Title string `json:"title"`
 	Link  string `json:"link,omitempty"`
 	Body  string `json:"body,omitempty"`
