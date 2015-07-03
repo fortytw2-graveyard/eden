@@ -46,4 +46,22 @@ func TestVoteService(t *testing.T) {
 		t.Errorf("postTotal is not the exact number in GetRealPostVotes(), %d", postTotal)
 	}
 
+	vote, err := vs.CheckUserPostVote(1, 1)
+	if err != nil {
+		t.Errorf("check user post vote returned an error, %s", err)
+	}
+
+	if !vote.Up {
+		t.Errorf("upvote not returned as an upvote...")
+	}
+
+	vote, err = vs.CheckUserCommentVote(4, 2)
+	if err != nil {
+		t.Errorf("check user comment vote returned an error, %s", err)
+	}
+
+	if vote.Up {
+		t.Errorf("downvote was not returned as a downvote.....")
+	}
+
 }

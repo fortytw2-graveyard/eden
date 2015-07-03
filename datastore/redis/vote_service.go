@@ -1,10 +1,15 @@
 package redis
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/fortytw2/eden/model"
 	redigo "github.com/garyburd/redigo/redis"
+)
+
+var (
+	errUserDidNotVote = errors.New("user did not vote")
 )
 
 // VoteService handles setting and getting of votes
@@ -33,22 +38,22 @@ func (vs *VoteService) GetRealCommentVotes(commentID int) (total int, err error)
 
 // GetPostVotes returns the total votes on a post
 func (vs *VoteService) GetPostVotes(postID int) (total int, err error) {
-	return
+	return vs.GetRealPostVotes(postID)
 }
 
 // GetCommentVotes returns the total votes on a comment
 func (vs *VoteService) GetCommentVotes(commentID int) (total int, err error) {
-	return
+	return vs.GetCommentVotes(commentID)
 }
 
 // CheckUserPostVote returns whether or not a user has voted on a post - and the details if they have
 func (vs *VoteService) CheckUserPostVote(userID, postID int) (vote *model.Vote, err error) {
-	return
+	return vs.checkVoteStatus("post", userID, postID)
 }
 
 // CheckUserCommentVote returns whether or not a user has voted on a comment - and the details if they have
 func (vs *VoteService) CheckUserCommentVote(userID, postID int) (vote *model.Vote, err error) {
-	return
+	return vs.checkVoteStatus("comment", userID, postID)
 }
 
 // SaveVote commits a vote + updates totals based off the internals of the vote
@@ -83,6 +88,32 @@ func (vs *VoteService) UpdateVote(v *model.Vote) (err error) {
 		err = vs.SaveVote(v)
 	} else if status == 1 && !v.Up {
 		err = vs.SaveVote(v)
+	}
+	return
+}
+
+func (vs *VoteService) checkVoteStatus(voteType string, userID, postID int) (vote *model.Vote, err error) {
+	c := vs.pool.Get()
+	var status int
+	status, err = redigo.Int(c.Do("GET", voteType+":"+strconv.Itoa(postID)+":"+strconv.Itoa(userID)))
+	if err != nil {
+		return
+	}
+
+	if status == 1 {
+		vote = model.NewVote(voteType, postID, userID, true)
+		return
+	}
+
+	if status == 0 {
+		vote = nil
+		err = errUserDidNotVote
+		return
+	}
+
+	if status == -1 {
+		vote = model.NewVote(voteType, postID, userID, false)
+		return
 	}
 	return
 }

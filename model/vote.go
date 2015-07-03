@@ -1,10 +1,7 @@
 package model
 
-import "github.com/satori/go.uuid"
-
 // A Vote is a single vote on a post or comment
 type Vote struct {
-	UUID     string
 	VoteType string
 	ObjectID int
 	UserID   int
@@ -18,7 +15,6 @@ func NewVote(voteType string, objectID, user int, up bool) *Vote {
 	}
 
 	return &Vote{
-		UUID:     uuid.NewV4().String(),
 		VoteType: voteType,
 		ObjectID: objectID,
 		UserID:   user,
