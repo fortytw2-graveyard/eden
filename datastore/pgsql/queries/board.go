@@ -23,4 +23,7 @@ func addBoardQueries() {
 
 	queries["delete_board_by_id"] = `
 	DELETE FROM boards WHERE id = $1;`
+
+	queries["get_all_boards"] = `
+	SELECT * FROM boards LIMIT 50 OFFSET $1;`
 }

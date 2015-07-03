@@ -49,6 +49,26 @@ func TestBoardService(t *testing.T) {
 		t.Errorf("found board was not created by fortytw2, instead %s", b.Creator)
 	}
 
+	board = &model.Board{
+		Name:    "AskMeAnything2",
+		Creator: "fortytw2",
+		Mods:    []string{"mod 1", "mod 2"},
+	}
+
+	err = ds.CreateBoard(board)
+	if err != nil {
+		t.Errorf("something went wrong inserting a board, %s", err)
+	}
+
+	boards, err := ds.GetBoards(0)
+	if err != nil {
+		t.Errorf("something went wrong getting every board, %s", err)
+	}
+
+	if len(boards) != 2 {
+		t.Error("apparently we don't have two boards...")
+	}
+
 	err = ds.DeleteBoard(b.ID)
 	if err != nil {
 		t.Errorf("something went wrong deleting a board, %s", err)

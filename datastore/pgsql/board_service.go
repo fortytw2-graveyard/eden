@@ -43,6 +43,26 @@ func (bs *BoardService) UpdateBoard(b *model.Board) (err error) {
 	return
 }
 
+// GetBoards returns paginated lists of boards
+func (bs *BoardService) GetBoards(page int) (boards []*model.Board, err error) {
+	var rows *sqlx.Rows
+	rows, err = bs.db.Queryx(queries.Get("get_all_boards"), page*50)
+	if err != nil {
+		return
+	}
+
+	for rows.Next() {
+		var board dbBoard
+		err = rows.StructScan(&board)
+		if err != nil {
+			return
+		}
+
+		boards = append(boards, newModelBoard(&board))
+	}
+	return
+}
+
 // GetBoardByName returns the board information
 func (bs *BoardService) GetBoardByName(boardName string) (b *model.Board, err error) {
 	row := bs.db.QueryRowx(queries.Get("get_board_by_name"), boardName)
