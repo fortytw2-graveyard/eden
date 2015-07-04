@@ -3,7 +3,7 @@ package queries
 func addBoardQueries() {
 	// inserts a new board
 	queries["insert_board"] = `
-  INSERT INTO boards (name, creator, mods, summary)
+    INSERT INTO boards (name, creator, mods, summary)
          VALUES (:name, :creator, :mods, :summary)`
 
 	queries["update_board"] = `
