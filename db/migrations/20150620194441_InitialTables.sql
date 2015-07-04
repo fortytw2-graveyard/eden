@@ -4,6 +4,7 @@ CREATE TABLE users (
     username     TEXT NOT NULL UNIQUE,
     email        TEXT NOT NULL UNIQUE,
     passwordhash TEXT,
+    
     banned       BOOLEAN DEFAULT false,
     admin        BOOLEAN DEFAULT false,
     confirmed    BOOLEAN DEFAULT false,
@@ -12,21 +13,21 @@ CREATE TABLE users (
 );
 
 CREATE TABLE boards (
-    id         SERIAL PRIMARY KEY,
-    name       TEXT UNIQUE,
-    creator    TEXT,
-    mods       TEXT[],
-    summary    TEXT NOT NULL,
-    deleted    BOOLEAN DEFAULT false,
-    approved   BOOLEAN DEFAULT false,
+    id           SERIAL PRIMARY KEY,
+    name         TEXT UNIQUE,
+    creator_name TEXT,
+    mod_names    TEXT[],
+    summary      TEXT NOT NULL,
+    deleted      BOOLEAN DEFAULT false,
+    approved     BOOLEAN DEFAULT false,
 
     created_at TIMESTAMP DEFAULT now()
 );
 
 CREATE TABLE posts (
     id         SERIAL PRIMARY KEY,
-    board      INT references boards (id),
-    op         INT references users (id),
+    board_id   INT references boards (id),
+    op_id      INT references users (id),
     title      TEXT NOT NULL,
     link       TEXT NOT NULL,
     body       TEXT NOT NULL,
@@ -36,10 +37,10 @@ CREATE TABLE posts (
 
 CREATE TABLE comments (
     id          SERIAL PRIMARY KEY,
-    post        INT references posts (id),
-    comment     INT references comments (id),
+    post_id     INT references posts (id),
+    comment_id  INT references comments (id),
 
-    op          INT references users (id),
+    op_id       INT references users (id),
     op_name     TEXT,
     op_admin    BOOLEAN,
     body        TEXT,

@@ -6,15 +6,22 @@ import (
 	"os"
 	"time"
 
+	"github.com/fortytw2/eden/datastore"
+	"github.com/fortytw2/eden/datastore/pgsql"
+	"github.com/fortytw2/eden/datastore/pgsql/queries"
+	"github.com/fortytw2/eden/datastore/redis"
 	"github.com/fortytw2/eden/web"
-	_ "github.com/joho/godotenv/autoload"
-
 	"github.com/julienschmidt/httprouter"
+
+	// autoload ENV from .env
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
-	router := httprouter.New()
+	log.Println("eden: initializing")
+	log.Printf("eden: loaded %d sql queries\n", len(queries.All()))
 
+	router := httprouter.New()
 	router.GET("/", web.Homepage)
 
 	log.Println("eden: now listening on port", os.Getenv("PORT"))
@@ -31,6 +38,23 @@ func httpLogger(router http.Handler) http.Handler {
 		router.ServeHTTP(w, req)
 		finishTime := time.Now()
 		elapsedTime := finishTime.Sub(startTime)
-		log.Println(req.Method, req.URL, elapsedTime)
+		log.Println("eden:", req.Method, req.URL, elapsedTime)
 	})
+}
+
+// build our production datastore
+func constructDatastore() *datastore.Datastore {
+	db, err := pgsql.NewDBHandle()
+	if err != nil {
+		log.Fatalf("eden: fatal error getting DB handle, %s\n", err)
+	}
+	r := redis.GetRedisPool()
+
+	return &datastore.Datastore{
+		UserService:    pgsql.NewUserService(db),
+		BoardService:   pgsql.NewBoardService(db),
+		PostService:    pgsql.NewPostService(db),
+		CommentService: pgsql.NewCommentService(db),
+		VoteService:    redis.NewVoteService(r),
+	}
 }

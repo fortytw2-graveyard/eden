@@ -101,8 +101,8 @@ func (bs *BoardService) DeleteBoard(boardID int) (err error) {
 type dbBoard struct {
 	ID        int               `json:"id"`
 	Name      string            `json:"name"`
-	Creator   string            `json:"creator"`
-	Mods      types.StringArray `json:"mods"`
+	Creator   string            `json:"creator" db:"creator_name"`
+	Mods      types.StringArray `json:"mods" db:"mod_names"`
 	Summary   string            `json:"summary"`
 	Deleted   bool              `json:"deleted"`
 	Approved  bool              `json:"-"`
