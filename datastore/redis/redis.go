@@ -16,7 +16,7 @@ func GetRedisPool() *redigo.Pool {
 		Dial: func() (redigo.Conn, error) {
 			c, err := redigo.Dial("tcp", os.Getenv("REDIS_URL"))
 			if err != nil {
-				log.Fatalln("eden: failed to connect to redis @", os.Getenv("REDIS_URL"))
+				log.Fatalln("eden: failed to connect to redis at", os.Getenv("REDIS_URL"))
 				return nil, err
 			}
 			return c, err
