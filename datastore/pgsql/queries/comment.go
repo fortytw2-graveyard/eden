@@ -2,46 +2,56 @@ package queries
 
 func addCommentQueries() {
 	queries["insert_comment"] = `
-    INSERT INTO comments (id, post_id, comment_id, op_id, op_name, op_admin, body)
-           VALUES (:id, :post_id, :comment_id, :op_id, :op_name, :op_admin, :body)`
+    INSERT INTO comments (post_id, comment_id, op_id, body)
+           VALUES (:post_id, :comment_id, :op_id, :body)`
 
-	queries["get_comment_tree"] = `
-    WITH RECURSIVE cte (id, post_id, comment_id, op_id, op_name, op_admin, body, depth) AS (
+	queries["get_post_comments"] = `
+    WITH RECURSIVE cte (id, body, op_id, path, comment_id, depth)  AS (
     SELECT id,
-        post_id,
-        comment_id,
-        array[id] AS path,
-        op_id,
-        op_name,
-        op_admin,
         body,
+        op_id,
+        array[id] AS path,
+        comment_id,
         1 AS depth
     FROM comments
-    WHERE comment_id IS NULL
+    WHERE comment_id = 0 AND post_id = $1
 
     UNION ALL
 
     SELECT comments.id,
-        comment.post_id,
         comments.body,
         comments.op_id,
-        comments.op_name,
-        comments.op_admin,
         cte.path || comments.id,
         comments.comment_id,
         cte.depth + 1 AS depth
     FROM comments
-        JOIN cte ON comments.comment_id = cte.id
+    JOIN cte ON comments.comment_id = cte.id
     )
-    SELECT id, post_id, comment_id, op_id, op_name, op_admin, body, path, depth FROM cte
+    SELECT id, body, op_id, comment_id, path, depth FROM cte
+    ORDER BY path;`
+
+	queries["get_user_comments"] = `
+    WITH RECURSIVE cte (id, body, op_id, path, comment_id, depth)  AS (
+    SELECT id,
+        body,
+        op_id,
+        array[id] AS path,
+        comment_id,
+        1 AS depth
+    FROM comments
+    WHERE comment_id = 0 AND op_id = $1
+
+    UNION ALL
+
+    SELECT comments.id,
+        comments.body,
+        comments.op_id,
+        cte.path || comments.id,
+        comments.comment_id,
+        cte.depth + 1 AS depth
+    FROM comments
+    JOIN cte ON comments.comment_id = cte.id
+    )
+    SELECT id, body, op_id, comment_id, path, depth FROM cte
     ORDER BY path;`
 }
-
-// id          SERIAL PRIMARY KEY,
-// post        INT references posts (id),
-// comment     INT references comments (id),
-//
-// op          INT references users (id),
-// op_name     TEXT,
-// op_admin    BOOLEAN,
-// body        TEXT,

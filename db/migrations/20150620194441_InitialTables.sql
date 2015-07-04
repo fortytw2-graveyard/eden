@@ -4,7 +4,7 @@ CREATE TABLE users (
     username     TEXT NOT NULL UNIQUE,
     email        TEXT NOT NULL UNIQUE,
     passwordhash TEXT,
-    
+
     banned       BOOLEAN DEFAULT false,
     admin        BOOLEAN DEFAULT false,
     confirmed    BOOLEAN DEFAULT false,
@@ -37,12 +37,12 @@ CREATE TABLE posts (
 
 CREATE TABLE comments (
     id          SERIAL PRIMARY KEY,
-    post_id     INT references posts (id),
-    comment_id  INT references comments (id),
+    post_id     INT NOT NULL references posts (id),
+    comment_id  INT,
 
     op_id       INT references users (id),
     op_name     TEXT,
-    op_admin    BOOLEAN,
+    op_admin    BOOLEAN DEFAULT false,
     body        TEXT,
 
     created_at  TIMESTAMP DEFAULT now()

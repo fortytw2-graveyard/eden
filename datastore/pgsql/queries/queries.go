@@ -7,6 +7,7 @@ func init() {
 	addUserQueries()
 	addBoardQueries()
 	addPostQueries()
+	addCommentQueries()
 }
 
 // Get returns the named query

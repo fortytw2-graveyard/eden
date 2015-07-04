@@ -48,8 +48,7 @@ type PostService interface {
 
 // A CommentService provides access to comments for posts and creation of posts
 type CommentService interface {
-	CreateRootComment(postID int, newComment *model.Comment) error
-	CreateChildComment(commentID int, newComment *model.Comment) error
+	CreateComment(*model.Comment) error
 
 	GetComment(commentID int) (*model.Comment, error)
 
