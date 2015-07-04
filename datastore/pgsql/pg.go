@@ -21,6 +21,7 @@ func NewDatastore() (ds *datastore.Datastore, err error) {
 	ds = &datastore.Datastore{
 		UserService:  NewUserService(db),
 		BoardService: NewBoardService(db),
+		PostService:  NewPostService(db),
 	}
 
 	return

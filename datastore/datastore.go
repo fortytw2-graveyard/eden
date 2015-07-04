@@ -39,9 +39,9 @@ type PostService interface {
 
 	GetPost(postID int) (*model.Post, error)
 
-	GetBoardPostsByName(boardName string, postFilter *model.PostFilter) ([]*model.Post, error)
-	GetBoardPostsByID(boardID string, postFilter *model.PostFilter) ([]*model.Post, error)
-	GetUserPosts(userID int) ([]model.Post, error)
+	GetBoardPostsByName(boardName string, page int) ([]*model.Post, error)
+	GetBoardPostsByID(boardID, page int) ([]*model.Post, error)
+	GetUserPosts(userID, page int) ([]*model.Post, error)
 
 	DeletePost(postID int) error
 }

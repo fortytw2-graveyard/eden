@@ -25,10 +25,11 @@ CREATE TABLE boards (
 
 CREATE TABLE posts (
     id         SERIAL PRIMARY KEY,
+    board      INT references boards (id),
     op         INT references users (id),
-    title      TEXT,
-    link       TEXT,
-    body       TEXT,
+    title      TEXT NOT NULL,
+    link       TEXT NOT NULL,
+    body       TEXT NOT NULL,
 
     created_at TIMESTAMP DEFAULT now()
 );

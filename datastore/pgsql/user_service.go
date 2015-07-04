@@ -21,7 +21,7 @@ func NewUserService(db *sqlx.DB) *UserService {
 // CreateUser adds a user to the datastore
 func (us *UserService) CreateUser(u *model.User) (err error) {
 	_, err = us.db.NamedQuery(queries.Get("insert_user"), u)
-	return err
+	return
 }
 
 // UpdateUser updates a database user by ID
