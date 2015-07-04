@@ -1,8 +1,16 @@
-Eden [![Build Status](https://magnum.travis-ci.com/fortytw2/eden.svg?token=UxRGpS8yzyKfsTeFz1dM)](https://magnum.travis-ci.com/fortytw2/eden)
+Eden [![Build Status](https://travis-ci.org/fortytw2/eden.svg)](https://travis-ci.org/fortytw2/eden)
 ------
 
-Transparent link aggregator.
+Open source, API first link aggregator with an emphasis on being transparent.
 
+Building
+------
+
+Should be able to install via `go get -u github.com/fortytw2/eden`, then configure a .env properly and you're good to go :)
+
+Bugs 
+------
+100% just open an issue and someone'll take a look at it soon enough. 
 
 LICENSE
 ------
