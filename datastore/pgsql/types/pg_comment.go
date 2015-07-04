@@ -32,12 +32,37 @@ func AssembleCommentTree(rows []PGComment) (comments []*model.Comment) {
 			comments = append(comments, row.GetModelComment())
 		}
 		if row.Depth == 2 {
-			comments[row.Path[0]-1].Children = append(comments[row.Path[0]-1].Children, row.GetModelComment())
+			id := getParentNode(row.Path[0]-1, comments)
+			comments[id].Children = append(comments[id].Children, row.GetModelComment())
 		}
 		if row.Depth == 3 {
-			comments[row.Path[0]-1].Children[row.Path[1]-1].Children = append(comments[row.Path[0]-1].Children[row.Path[1]-1].Children, row.GetModelComment())
+			id1 := getParentNode(row.Path[0]-1, comments)
+			id2 := getParentNode(row.Path[1]-1, comments)
+			comments[id1].Children[id2].Children = append(comments[id1].Children[id2].Children, row.GetModelComment())
 		}
-
+		if row.Depth == 4 {
+			id1 := getParentNode(row.Path[0]-1, comments)
+			id2 := getParentNode(row.Path[1]-1, comments)
+			id3 := getParentNode(row.Path[2]-1, comments)
+			comments[id1].Children[id2].Children[id3].Children = append(comments[id1].Children[id2].Children[id3].Children, row.GetModelComment())
+		}
+		if row.Depth == 5 {
+			id1 := getParentNode(row.Path[0]-1, comments)
+			id2 := getParentNode(row.Path[1]-1, comments)
+			id3 := getParentNode(row.Path[2]-1, comments)
+			id4 := getParentNode(row.Path[3]-1, comments)
+			comments[id1].Children[id2].Children[id3].Children[id4].Children = append(comments[id1].Children[id2].Children[id3].Children[id4].Children, row.GetModelComment())
+		}
 	}
 	return
+}
+
+func getParentNode(id int, cs []*model.Comment) int {
+	for i, node := range cs {
+		if node.ID == id {
+			return i
+		}
+	}
+	return 0
+
 }
