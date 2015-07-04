@@ -2,13 +2,13 @@ package model
 
 // Comment is either a root or child comment on a post
 type Comment struct {
-	ID        int
-	UserID    int `db:"op_id"`
-	PostID    int `db:"post_id"`
-	CommentID int `db:"comment_id"`
-	Votes     int `json:"votes" db:"-"`
-	Body      string
-	Children  []*Comment
+	ID        int        `json:"id"`
+	UserID    int        `json:"-" db:"op_id"`
+	PostID    int        `json:"-" db:"post_id"`
+	CommentID int        `json:"-" db:"comment_id"`
+	Votes     int        `json:"votes" db:"-"`
+	Body      string     `json:"body"`
+	Children  []*Comment `json:"children,omitempty"`
 }
 
 // NewComment generates a comment on a comment
