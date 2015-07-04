@@ -56,7 +56,6 @@ func (cs *CommentService) GetPostComments(postID int) (comments []*model.Comment
 		if err != nil {
 			return
 		}
-		log.Printf("%+v", pgc)
 		pgcr = append(pgcr, pgc)
 	}
 
