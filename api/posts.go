@@ -15,7 +15,7 @@ import (
 // GetPost returns a single post and its comments
 func GetPost(ds *datastore.Datastore) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		num, err := strconv.Atoi(ps.ByName("id"))
+		num, err := strconv.Atoi(ps.ByName("post_id"))
 		if err != nil {
 			util.JSONError(w, err, http.StatusInternalServerError)
 			return

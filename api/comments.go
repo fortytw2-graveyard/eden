@@ -39,7 +39,7 @@ func CreateComment(ds *datastore.Datastore) httprouter.Handle {
 			return
 		}
 
-		num, err := strconv.Atoi(ps.ByName("id"))
+		num, err := strconv.Atoi(ps.ByName("post_id"))
 		if err != nil {
 			util.JSONError(w, err, http.StatusBadRequest)
 			return

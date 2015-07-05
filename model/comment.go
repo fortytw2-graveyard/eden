@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // Comment is either a root or child comment on a post
 type Comment struct {
 	ID        int        `json:"id"`
@@ -9,6 +11,7 @@ type Comment struct {
 	Votes     int        `json:"votes" db:"-"`
 	Body      string     `json:"body"`
 	Children  []*Comment `json:"children,omitempty"`
+	CreatedAt time.Time  `json:"created_at" db:"created_at"`
 }
 
 // NewComment generates a comment on a comment

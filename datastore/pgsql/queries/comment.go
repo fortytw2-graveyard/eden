@@ -5,6 +5,9 @@ func addCommentQueries() {
     INSERT INTO comments (post_id, comment_id, op_id, body)
            VALUES (:post_id, :comment_id, :op_id, :body)`
 
+	queries["get_comment_by_id"] = `
+	SELECT * FROM comments WHERE id = $1;`
+
 	queries["get_post_comments"] = `
     WITH RECURSIVE cte (id, body, op_id, path, comment_id, depth)  AS (
     SELECT id,

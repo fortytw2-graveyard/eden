@@ -29,6 +29,15 @@ func (cs *CommentService) CreateComment(c *model.Comment) (err error) {
 
 // GetComment returns a comment along with its full tree
 func (cs *CommentService) GetComment(commentID int) (c *model.Comment, err error) {
+	row := cs.db.QueryRowx(queries.Get("get_comment_by_id"), commentID)
+
+	var scanC model.Comment
+	err = row.StructScan(&scanC)
+	if err != nil {
+		return
+	}
+	c = &scanC
+
 	return
 }
 

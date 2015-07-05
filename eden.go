@@ -31,9 +31,13 @@ func main() {
 	router.POST("/b/", api.CreateBoard(data))
 
 	router.GET("/b/:board/", api.GetBoardPosts(data))
-	router.GET("/b/:board/post/:id", api.GetPost(data))
-	router.POST("/b/:board/", api.CreatePost(data))
-	router.POST("/b/:board/post/:id", api.CreateComment(data))
+	router.GET("/b/:board/p/:post_id", api.GetPost(data))
+	router.POST("/b/:board/p/", api.CreatePost(data))
+	router.POST("/b/:board/p/:post_id/v/:vote", api.UpvotePost(data))
+	// router.POST("/b/:board/:id/down", api.DownvotePost(data))
+	router.POST("/b/:board/p/:post_id/c/", api.CreateComment(data))
+	router.POST("/b/:board/p/:post_id/c/:comment_id/v/:vote", api.VoteComment(data))
+	// router.POST("/b/:board/:post_id/:comment_id/down", api.DownvoteComment(data))
 
 	router.POST("/u/", api.NewUser(data))
 	// router.GET("/u/:username")
