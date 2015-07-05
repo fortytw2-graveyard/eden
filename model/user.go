@@ -62,8 +62,3 @@ func (u *User) CheckPassword(password string) bool {
 func (u *User) GenConfirmationCode() (*string, error) {
 	return nil, nil
 }
-
-// Confirm the user based on the confirmation code passed
-func (u *User) Confirm(cc string) error {
-	return nil
-}

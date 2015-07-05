@@ -63,9 +63,6 @@ type VoteService interface {
 	GetRealPostVotes(postID int) (int, error)
 	GetRealCommentVotes(commentID int) (int, error)
 
-	GetPostVotes(postID int) (int, error)
-	GetCommentVotes(commentID int) (int, error)
-
 	CheckUserPostVote(userID, postID int) (*model.Vote, error)
 	CheckUserCommentVote(userID, postID int) (*model.Vote, error)
 
@@ -79,6 +76,14 @@ func (d *Datastore) GetPostWithComments(postID int) (post *model.Post, comments 
 	if err != nil {
 		return
 	}
+
+	var votes int
+	votes, err = d.GetRealPostVotes(postID)
+	if err != nil {
+		return
+	}
+
+	post.Votes = votes
 
 	comments, err = d.GetPostComments(postID)
 	if err != nil {
@@ -95,10 +100,25 @@ func (d *Datastore) GetCommentWithContext(commentID int) (post *model.Post, comm
 		return
 	}
 
+	var votes int
+	votes, err = d.GetRealCommentVotes(commentID)
+	if err != nil {
+		return
+	}
+
+	comment.Votes = votes
+
 	post, err = d.GetPost(comment.PostID)
 	if err != nil {
 		return
 	}
+
+	votes, err = d.GetRealPostVotes(comment.PostID)
+	if err != nil {
+		return
+	}
+
+	post.Votes = votes
 
 	return
 }

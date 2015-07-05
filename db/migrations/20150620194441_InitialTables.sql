@@ -41,8 +41,6 @@ CREATE TABLE comments (
     comment_id  INT,
 
     op_id       INT references users (id),
-    op_name     TEXT,
-    op_admin    BOOLEAN DEFAULT false,
     body        TEXT,
 
     created_at  TIMESTAMP DEFAULT now()

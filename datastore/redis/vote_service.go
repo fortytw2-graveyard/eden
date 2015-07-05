@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	errUserDidNotVote = errors.New("user did not vote")
+	ErrUserDidNotVote = errors.New("user did not vote")
 )
 
 // VoteService handles setting and getting of votes
@@ -27,23 +27,19 @@ func NewVoteService(rpl *redigo.Pool) *VoteService {
 // GetRealPostVotes returns the total real votes on a post
 func (vs *VoteService) GetRealPostVotes(postID int) (total int, err error) {
 	total, err = redigo.Int(vs.pool.Get().Do("GET", "post:"+strconv.Itoa(postID)))
+	if err != nil {
+		return 0, nil
+	}
 	return
 }
 
 // GetRealCommentVotes returns the total real votes on a comment
 func (vs *VoteService) GetRealCommentVotes(commentID int) (total int, err error) {
 	total, err = redigo.Int(vs.pool.Get().Do("GET", "comment:"+strconv.Itoa(commentID)))
+	if err != nil {
+		return 0, nil
+	}
 	return
-}
-
-// GetPostVotes returns the total votes on a post
-func (vs *VoteService) GetPostVotes(postID int) (total int, err error) {
-	return vs.GetRealPostVotes(postID)
-}
-
-// GetCommentVotes returns the total votes on a comment
-func (vs *VoteService) GetCommentVotes(commentID int) (total int, err error) {
-	return vs.GetCommentVotes(commentID)
 }
 
 // CheckUserPostVote returns whether or not a user has voted on a post - and the details if they have
@@ -107,7 +103,7 @@ func (vs *VoteService) checkVoteStatus(voteType string, userID, postID int) (vot
 
 	if status == 0 {
 		vote = nil
-		err = errUserDidNotVote
+		err = ErrUserDidNotVote
 		return
 	}
 
